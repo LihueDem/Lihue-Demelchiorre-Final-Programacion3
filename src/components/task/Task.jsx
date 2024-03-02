@@ -1,47 +1,73 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { TaskCard } from "./TaskCard";
 import { TaskAdd } from "./TaskAdd";
 import { dataCard } from "../../data/Task";
 
 export const Task = () => {
   const [addDataCard, setAddDataCard] = useState(dataCard);
+  const [addTask, setAddTask] = useState("");
+  const [asterisc, setAsterisc] = useState("");
 
-  const onClickAddTask = (value) => {
-    // console.log(valueTask);
+  //Funciones para TaskCard
+  const onChangeTarea = (e) => {
+    setAddTask(e.target.value);
+    console.log({ addTask });
+  };
+
+  const onChangeAsterisc = (e) => {
+    setAsterisc(e.target.value);
+    console.log(asterisc);
+  };
+
+  //Nueva card
+  const onClickNewTask = (newValue) => {
+    //Genera objeto con los valores que recibe para la card nueva
+
     const newTaskObj = {
       id: addDataCard[addDataCard.length - 1].id + 1,
-      // id: addDataCard.at(-1).id + 1, NUEVA FORMA DE CONSEGUIR EL ULTIMO INDICE
-      taskTitle: value,
+      taskTitle: addTask,
+      asterisc: "*".repeat(asterisc.length),
     };
-
+    //Almacena el objeto nuevo en el estado del array
     setAddDataCard([...addDataCard, newTaskObj]);
+
+    console.log(newTaskObj);
   };
 
   const onClickDelete = (id) => {
-    console.log(`Eliminar el id: ${id} `);
-    const newArrCards = addDataCard.filter((item) => item.id != id);
-    setAddDataCard(newArrCards);
+    //Genera un array nuevo sin el id que elimine
+    const newArrCard = addDataCard.filter((item) => item.id != id);
+    //Guardo el array en el estado
+    setAddDataCard(newArrCard);
   };
 
   return (
     <div className="container" id="featured-3">
-      <div>
-        <h1>Deja tu opinion aqui</h1>
-      </div>
-
       <div className="row py-5">
         {addDataCard.map((item) => (
           <TaskCard
             key={item.id}
             dataCardItem={item}
-            deleteCard={(value) => onClickDelete(value)}
+            deleteCard={(id) => onClickDelete(id)}
           />
         ))}
       </div>
-      <TaskAdd onClickAdd={(value) => onClickAddTask(value)} />
+      <TaskAdd
+        onChangeTarea={onChangeTarea}
+        onChangeAsterisc={onChangeAsterisc}
+        onClickAdd={(newValue) => onClickNewTask(newValue)}
+      />
     </div>
   );
 };
 
 //Callback
-//<TaskAdd onClickPadre={(value) => onClickTaskAdd
+//<TaskAdd onClickPadre={(value) => onClickTaskAdd}
+
+//La funcion map cuando debe devolver elementos html debe hacer un return implicito utilizando () en lugar de {}
+//{dataCard.map((item) => ()} por eso item => devuelve ()
+
+//Todas las funciones maps tiene una KEY que identifica cada objeto
+//key={id}
+
+//Para generar una card nueva, hay que guardar el array en un useState para poder cambiar su estado
